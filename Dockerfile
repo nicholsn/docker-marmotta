@@ -5,6 +5,6 @@ RUN echo "deb http://stack.linkeddata.org/deb/ ldstack main" >> /etc/apt/sources
     apt-get update && \
     apt-get upgrade -y -o DPkg::Options::=--force-confold
     
-RUN apt-get install marmotta
+RUN apt-get -o DPkg::Options::=--force-confold install -y marmotta
 
 EXPOSE 8080
