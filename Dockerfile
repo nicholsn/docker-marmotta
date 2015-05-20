@@ -14,7 +14,7 @@ RUN git clone https://git-wip-us.apache.org/repos/asf/marmotta.git marmotta && \
     mvn clean install -DskipTests=true
 
 # Prepare to launch app.
-RUN cd launchers/marmotta-webapp
+RUN cd /marmotta/launchers/marmotta-webapp
 
 EXPOSE 8080
 
