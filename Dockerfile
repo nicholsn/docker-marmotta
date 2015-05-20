@@ -6,16 +6,20 @@ RUN apt-get update && \
     apt-get upgrade -y -o DPkg::Options::=--force-confold
 
 # Install build dependencies.
-RUN apt-get install -y --force-yes maven git openjdk-7-jdk
+RUN apt-get install -y --force-yes wget openjdk-7-jre-headless
 
-# Clone and build marmotta.
-RUN git clone https://git-wip-us.apache.org/repos/asf/marmotta.git marmotta && \
-    cd marmotta && \
-    mvn clean install -DskipTests=true
+# Get tomcat7
+RUN wget http://apache.mirrors.lucidnetworks.net/tomcat/tomcat-7/v7.0.62/bin/apache-tomcat-7.0.62.tar.gz && \
+    tar xvzf apache-tomcat-7.0.62.tar.gz && \
+    mv apache-tomcat-7.0.62 /usr/local/tomcat7 && \
+    rm -rf apache-tomcat-7.0.62.tar.gz /usr/local/tomcat7/webapps/*
 
-# Prepare to launch app.
-RUN cd /marmotta/launchers/marmotta-webapp
+# Get marmotta.
+RUN wget http://apache.osuosl.org/marmotta/3.3.0/apache-marmotta-3.3.0-webapp.tar.gz && \
+    tar xvzf apache-marmotta-3.3.0-webapp.tar.gz && \
+    cp /apache-marmotta-3.3.0/marmotta.war /usr/local/tomcat7/webapps/ROOT.war && \
+    rm -rf apache-marmotta-3.3.0-webapp.tar.gz /apache-marmotta-3.3.0
 
 EXPOSE 8080
 
-CMD mvn tomcat7:run
+CMD /usr/local/tomcat7/bin/startup.sh && tail -f /usr/local/tomcat7/logs/catalina.out
