@@ -1,6 +1,6 @@
 FROM stackbrew/ubuntu:14.04
 MAINTAINER "Nolan Nichols" <http://orcid.org/0000-0003-1099-3328>
-ENV MODIFIED="May 28, 2015 2:00pm"
+ENV MODIFIED="May 28, 2015 9:15pm"
 
 # Update and upgrade packages.
 RUN apt-get update && \
@@ -22,10 +22,12 @@ RUN wget http://apache.osuosl.org/marmotta/3.3.0/apache-marmotta-3.3.0-webapp.ta
     rm -rf apache-marmotta-3.3.0-webapp.tar.gz /apache-marmotta-3.3.0
 
 # Configure marmotta access
-RUN /usr/local/tomcat/bin/startup.sh && sleep 60 && \
-    curl -v -X POST -H "Content-Type: application/json" -d '[":plain::pass123"]' http://localhost:8080/marmotta/config/data/user.admin.pwhash && \
-    curl -X POST -H "Content-Type: application/json" -d '["standard"]' http://localhost:8080/marmotta/config/data/security.profile
-RUN /usr/local/tomcat/bin/shutdown.sh
+RUN /usr/local/tomcat/bin/startup.sh && sleep 10 && \
+    curl -v -X POST -H "Content-Type: application/json" -d '[":plain::pass123"]' http://localhost:8080/marmotta/config/data/user.admin.pwhash && sleep 10 && \
+    /usr/local/tomcat/bin/shutdown.sh && sleep 10
+RUN /usr/local/tomcat/bin/startup.sh && sleep 10 && \
+    curl -v -X POST -H "Content-Type: application/json" -d '["standard"]' http://localhost:8080/marmotta/config/data/security.profile -u admin:pass123 && sleep 10 && \
+    /usr/local/tomcat/bin/shutdown.sh && sleep 10
 
 EXPOSE 8080
 
